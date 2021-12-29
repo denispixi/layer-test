@@ -21,12 +21,13 @@ const savePaymentOrder = async (balanceId, amount) => {
     return await dynamoDb.putItem({
       TableName: PAYMENT_ORDERS_TABLE,
       Item: {
-        balanceId,
-        paymentOrderId,
-        amount,
-        status: PAYMENT_STATUS.pending,
+        'balanceId': { S: balanceId },
+        'paymentOrderId': { S: paymentOrderId },
+        'amount': { S: `${amount}` },
+        'status': { S: PAYMENT_STATUS.pending },
         // lastUpdate: undefined,
-      }
+      },
+      exr
     }).promise()
   } catch (error) {
     console.log('There was an error creating the payment order', error)
