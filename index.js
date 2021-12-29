@@ -8,6 +8,7 @@ const PAYMENT_STATUS = {
   pending: 'pending',
   paying: 'paying',
   paid: 'paid',
+  failed: 'failed',
 }
 
 /**
@@ -85,7 +86,7 @@ const startPayment = async (balanceId, paymentOrderId, amount) => {
  * @param {string} balanceId 
  * @param {string} paymentOrderId
  */
-const updatePaymentOrder = async (balanceId, paymentOrderId) => {
+const updatePaymentOrder = async (balanceId, paymentOrderId, withError) => {
   try {
     // TODO: Validate the amount vs the value of the table
     return await dynamoDb.transactWriteItems({
@@ -105,7 +106,7 @@ const updatePaymentOrder = async (balanceId, paymentOrderId) => {
             },
             ExpressionAttributeValues: {
               ':statusPaying': { S: PAYMENT_STATUS.paying },
-              ':statusPaid': { S: PAYMENT_STATUS.paid },
+              ':statusPaid': { S: withError ? PAYMENT_STATUS.error : PAYMENT_STATUS.paid },
               ':lastUpdate': { S: new Date().toISOString() },
             }
           }
