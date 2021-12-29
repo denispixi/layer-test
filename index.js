@@ -1,3 +1,4 @@
+// @ts-check
 const { DynamoDB } = require('aws-sdk')
 const crypto = require('crypto')
 const dynamoDb = new DynamoDB()
@@ -23,7 +24,7 @@ const savePaymentOrder = async (balanceId, amount) => {
       Item: {
         'balanceId': { S: balanceId },
         'paymentOrderId': { S: paymentOrderId },
-        'amount': { S: `${amount}` },
+        'amount': { N: `${amount}` },
         'status': { S: PAYMENT_STATUS.pending },
         // lastUpdate: undefined,
       },
@@ -65,7 +66,7 @@ const startPayment = async (balanceId, paymentOrderId, amount) => {
               ':statusPending': { S: PAYMENT_STATUS.pending },
               ':statusPaying': { S: PAYMENT_STATUS.paying },
               ':lastUpdate': { S: new Date().toISOString() },
-              ':amount': { N: amount }
+              ':amount': { N: `${amount}` }
             }
           }
         }
