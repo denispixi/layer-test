@@ -4,12 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha",
+    "coverage": "TZ=utc nyc --all --reporter=html npm run test && open ./coverage/index.html"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "aws-sdk": "^2.1048.0"
+    "aws-sdk": "^2.1048.0",
+    "aws-sdk-mock": "^5.5.0",
+    "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^9.1.3",
+    "nyc": "^15.1.0"
   }
 }
