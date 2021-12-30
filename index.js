@@ -1,8 +1,10 @@
 // @ts-check
+const crypto = require('crypto')
+const AWS = require('aws-sdk')
 
 const deps = {
-  crypto: require('crypto'),
-  dynamoDb: new (require('aws-sdk').DynamoDB)({ region: 'us-east-1' }),
+  crypto,
+  dynamoDb: new AWS.DynamoDB({ region: 'us-east-1' }),
   PAYMENT_ORDERS_TABLE: 'tbk-payment-orders',
   PAYMENT_STATUS: {
     pending: 'pending',

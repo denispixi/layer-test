@@ -55,7 +55,7 @@ describe('testing updatePaymentOrder method', function () {
       await updatePaymentOrder(deps)('foo', 'bar', true)
     } catch (error) {
       console.log(error.message)
-      expect(error.message).to.be.equal('Error processing the transaction for start payment')
+      expect(error.message).to.be.equal('Error processing the transaction for update the payment order')
     }
   })
 
