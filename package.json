@@ -1,7 +1,7 @@
 {
-  "name": "@denispixi/layer-test",
-  "version": "1.0.1",
-  "description": "",
+  "name": "@jooycar/tbk-lib",
+  "version": "1.0.0",
+  "description": "Library with methods for saving the Jooycar payment orders in DynamoDB",
   "main": "index.js",
   "scripts": {
     "test": "mocha",
