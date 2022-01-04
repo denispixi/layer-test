@@ -29,9 +29,9 @@ jobs:
           npm run build
           zip -r ./tbk-layer.zip nodejs
 
-      # - name: Create S3 Bucket to store layer code (if not already exists)
-      #   run: |
-      #     aws s3api head-bucket --bucket jooycar-payment-handlers-bkt 2>/dev/null || aws s3 mb s3://jooycar-payment-handlers-bkt
+      - name: Create S3 Bucket to store layer code (if not already exists)
+        run: |
+          aws s3api head-bucket --bucket jooycar-payment-handlers-bkt 2>/dev/null || aws s3 mb s3://jooycar-payment-handlers-bkt
 
       # - name: Upload Layer Code
       #   run: aws s3api put-object --bucket jooycar-payment-handlers-bkt --key dir-1/my_images.tar.bz2 --body my_images.tar.bz2
