@@ -36,7 +36,7 @@ describe('testing startPayment method', function () {
     }
     const result = await startPayment(deps)('foo', 'bar', 2000)
     expect(result).to.be.a('object')
-    expect(result).not.to.be.empty
+    expect(result).to.be.empty
   })
 
   it('startPayment method - ERROR', async () => {
