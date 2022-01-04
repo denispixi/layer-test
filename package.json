@@ -4,6 +4,7 @@
   "description": "Library with methods for saving the Jooycar payment orders in DynamoDB",
   "main": "index.js",
   "scripts": {
+    "build": "mkdir -p nodejs/node_modules/@jooycar/tbk-lib && cp -R src index.js package.json nodejs/node_modules/@jooycar/tbk-lib/",
     "test": "mocha",
     "coverage": "TZ=utc nyc --all --reporter=html npm run test && open ./coverage/index.html"
   },
