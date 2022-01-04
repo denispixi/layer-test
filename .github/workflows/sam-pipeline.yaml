@@ -16,7 +16,7 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
       # sam build 
-      # - run: sam build --use-container
+      - run: echo "${GITHUB_REF##*/}"
 
       # Run Unit tests- Specify unit tests here
       - name: Unit testing
