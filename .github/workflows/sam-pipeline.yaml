@@ -23,15 +23,17 @@ jobs:
           # Set variables
           BUCKET_NAME=jooycar-payment-handlers-bkt
           LAYER_FILE_KEY=tbk-layer.zip
+          BRANCH=${GITHUB_REF##*/}
           # In this step we are setting variables and persistenting them
           # into the environment so that they can be utilized in other steps
           echo "::set-output name=bucket_name::$BUCKET_NAME"
           echo "::set-output name=layer_file_key::$LAYER_FILE_KEY"
+          echo "::set-output name=branch::$BRANCH"
           # Output variables to ensure their values are set correctly when ran
           echo "The layer_file_key is $LAYER_FILE_KEY"
           echo "The bucket_name is $BUCKET_NAME"
       # sam build 
-      - run: echo "${GITHUB_REF##*/}"
+      - run: echo "${{ steps.vars.outputs.branch }}"
 
       # Run Unit tests- Specify unit tests here
       - name: Unit testing
@@ -58,5 +60,5 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: MyStack
-          template: IaC/stack.yaml
+          template: IaC/${GITHUB_REF##*/}stack.yaml
           parameter-overrides: "LayerBucket=${{ steps.vars.outputs.bucket_name }},LayerFileKey=${GITHUB_REF##*/}/${{ steps.vars.outputs.layer_file_key }}"
