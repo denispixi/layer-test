@@ -7,10 +7,6 @@
   "timeout": 20000,
   "ui": "bdd",
   "require": "test/hooks.js",
-  "spec": [
-    "index.spec.js",
-    "src/**/*.spec.js"
-  ],
   "watch-files": [],
   "watch-ignore": []
 }
