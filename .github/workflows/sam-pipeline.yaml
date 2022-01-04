@@ -51,10 +51,7 @@ jobs:
           aws s3api head-bucket --bucket ${{ steps.vars.outputs.bucket_name }} 2>/dev/null || aws s3 mb s3://${{ steps.vars.outputs.bucket_name }}
 
       - name: Upload Layer Code
-        run: aws s3api put-object \
-          --bucket ${{ steps.vars.outputs.bucket_name }} \
-          --key ${{ steps.vars.outputs.branch }}/${{ steps.vars.outputs.layer_file_key }} \
-          --body ./${{ steps.vars.outputs.layer_file_key }}
+        run: aws s3api put-object --bucket ${{ steps.vars.outputs.bucket_name }} --key ${{ steps.vars.outputs.branch }}/${{ steps.vars.outputs.layer_file_key }} --body ./${{ steps.vars.outputs.layer_file_key }}
 
       - name: Deploy to AWS CloudFormation
         uses: aws-actions/aws-cloudformation-github-deploy@v1
