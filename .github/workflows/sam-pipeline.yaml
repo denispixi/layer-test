@@ -15,6 +15,21 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
+      
+      - name: Configure variables
+        shell: bash
+        id: vars
+        run: |
+          # Set variables
+          BUCKET_NAME=jooycar-payment-handlers-bkt
+          LAYER_FILE_KEY=tbk-layer.zip
+          # In this step we are setting variables and persistenting them
+          # into the environment so that they can be utilized in other steps
+          echo "::set-output name=bucket_name::$BUCKET_NAME"
+          echo "::set-output name=layer_file_key::$LAYER_FILE_KEY"
+          # Output variables to ensure their values are set correctly when ran
+          echo "The layer_file_key is $LAYER_FILE_KEY"
+          echo "The bucket_name is $BUCKET_NAME"
       # sam build 
       - run: echo "${GITHUB_REF##*/}"
 
@@ -27,20 +42,21 @@ jobs:
       - name: Build layer zip file
         run: |
           npm run build
-          zip -r ./tbk-layer.zip nodejs
+          zip -r ./${{ steps.vars.outputs.bucket_name }} nodejs
 
       - name: Create S3 Bucket to store layer code (if not already exists)
         run: |
-          aws s3api head-bucket --bucket jooycar-payment-handlers-bkt 2>/dev/null || aws s3 mb s3://jooycar-payment-handlers-bkt
+          aws s3api head-bucket --bucket ${{ steps.vars.outputs.bucket_name }} 2>/dev/null || aws s3 mb s3://${{ steps.vars.outputs.bucket_name }}
 
       - name: Upload Layer Code
-        run: aws s3api put-object --bucket jooycar-payment-handlers-bkt --key ${GITHUB_REF##*/}/tbk-layer.zip --body ./tbk-layer.zip
+        run: aws s3api put-object \
+          --bucket ${{ steps.vars.outputs.bucket_name }} \
+          --key ${GITHUB_REF##*/}/${{ steps.vars.outputs.layer_file_key }} \
+          --body ./${{ steps.vars.outputs.layer_file_key }}
 
-      # - run: |
-      #     sam deploy \
-      #     --no-confirm-changeset \
-      #     --no-fail-on-empty-changeset \
-      #     --stack-name sam-hello-world \
-      #     --s3-bucket payment-handlers-bkt \
-      #     --capabilities CAPABILITY_IAM \
-      #     --region us-east-1 
+      - name: Deploy to AWS CloudFormation
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: MyStack
+          template: IaC/stack.yaml
+          parameter-overrides: "LayerBucket=${{ steps.vars.outputs.bucket_name }},LayerFileKey=${GITHUB_REF##*/}/${{ steps.vars.outputs.layer_file_key }}"
