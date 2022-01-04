@@ -19,7 +19,7 @@ jobs:
       # - run: sam build --use-container
 
       # Run Unit tests- Specify unit tests here
-      - run: npm run test
+      - run: npm i && npm run test
 
       - name: Build layer zip file
         run: zip -r ./tbk-layer.zip nodejs
