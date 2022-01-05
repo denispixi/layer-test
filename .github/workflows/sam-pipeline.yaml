@@ -44,7 +44,7 @@ jobs:
       - name: Build layer zip file
         run: |
           npm run build
-          zip -r ./${{ steps.vars.outputs.bucket_name }} nodejs
+          zip -r ./${{ steps.vars.outputs.layer_file_key }} nodejs
 
       - name: List layer zip file
         run: |
