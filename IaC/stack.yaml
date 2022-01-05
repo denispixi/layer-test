@@ -20,7 +20,7 @@ Resources:
               - 
                 AttributeName: "paymentOrderId"
                 AttributeType: "S"
-            TableName: "tbk-payment-orders"
+            TableName: "payment-orders"
             KeySchema: 
               - 
                 AttributeName: "balanceId"
@@ -38,6 +38,6 @@ Resources:
               - "nodejs14.x"
             LayerName: "payment-handlers-layer"
             Content: 
-                S3Bucket: "${LayerBucket}"
+                S3Bucket: !Sub "${LayerBucket}"
                 S3Key: !Sub "${LayerFileKey}"
 

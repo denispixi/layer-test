@@ -1,4 +1,5 @@
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -32,35 +33,32 @@ jobs:
           # Output variables to ensure their values are set correctly when ran
           echo "The layer_file_key is $LAYER_FILE_KEY"
           echo "The bucket_name is $BUCKET_NAME"
-      # sam build 
-      - run: echo "${{ steps.vars.outputs.branch }}"
 
-      # Run Unit tests- Specify unit tests here
-      - name: Unit testing
+      - name: Get latest layer version and set as a variable
+        shell: bash
+        id: get_latest_layer
         run: |
-          npm i
-          npm run test
+          result=$(aws lambda list-layer-versions --layer-name payment-handlers-layer)
+          echo $result
+          LAYER_VERSION_ARN=$(jq '.LayerVersions | max_by(.Version) | .LayerVersionArn' <<< "$result")
+          echo $LAYER_VERSION_ARN
+          echo "::set-output name=layer_version_arn::$LAYER_VERSION_ARN"
 
-      - name: Build layer zip file
+      - name: Print latest layer version
         run: |
-          npm run build
-          zip -r ./${{ steps.vars.outputs.layer_file_key }} nodejs
+          echo "${{ steps.vars.outputs.bucket_name }}"
 
-      - name: List layer zip file
-        run: |
-          ls -la
-          pwd
+      # - name: Create S3 Bucket to store layer code (if not already exists)
+      #   run: |
+      #     aws s3api head-bucket --bucket ${{ steps.vars.outputs.bucket_name }} 2>/dev/null || aws s3 mb s3://${{ steps.vars.outputs.bucket_name }}
 
-      - name: Create S3 Bucket to store layer code (if not already exists)
-        run: |
-          aws s3api head-bucket --bucket ${{ steps.vars.outputs.bucket_name }} 2>/dev/null || aws s3 mb s3://${{ steps.vars.outputs.bucket_name }}
+      # - name: Upload Layer Code
+      #   run: aws s3api put-object --bucket ${{ steps.vars.outputs.bucket_name }} --key ${{ steps.vars.outputs.branch }}/${{ steps.vars.outputs.layer_file_key }} --body ${{ steps.vars.outputs.layer_file_key }}
 
-      - name: Upload Layer Code
-        run: aws s3api put-object --bucket ${{ steps.vars.outputs.bucket_name }} --key ${{ steps.vars.outputs.branch }}/${{ steps.vars.outputs.layer_file_key }} --body ${{ steps.vars.outputs.layer_file_key }}
-
-      - name: Deploy to AWS CloudFormation
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
-        with:
-          name: payment-order-handlers
-          template: IaC/stack.yaml
-          parameter-overrides: "LayerBucket=${{ steps.vars.outputs.bucket_name }},LayerFileKey=${{ steps.vars.outputs.branch }}/${{ steps.vars.outputs.layer_file_key }}"
+      # - name: Deploy to AWS CloudFormation
+      #   uses: aws-actions/aws-cloudformation-github-deploy@v1
+      #   with:
+      #     name: payment-order-handlers
+      #     template: IaC/stack.yaml
+      #     no-fail-on-empty-changeset: "1"
+      #     parameter-overrides: "LayerBucket=${{ steps.vars.outputs.bucket_name }},LayerFileKey=${{ steps.vars.outputs.branch }}/${{ steps.vars.outputs.layer_file_key }}"
