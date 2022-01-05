@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Metadata:
+    Generator: "former2"
+Description: ""
+Parameters:
+  LayerBucket:
+    Type: String
+    Description: Enter the buckey where the layer code is stored
+  LayerFileKey:
+    Type: String
+    Description: Enter the buckey where the layer code is stored
+Resources:
+    DynamoDBTable:
+        Type: "AWS::DynamoDB::Table"
+        Properties:
+            AttributeDefinitions: 
+              - 
+                AttributeName: "balanceId"
+                AttributeType: "S"
+              - 
+                AttributeName: "paymentOrderId"
+                AttributeType: "S"
+            TableName: "tbk-payment-orders"
+            KeySchema: 
+              - 
+                AttributeName: "balanceId"
+                KeyType: "HASH"
+              - 
+                AttributeName: "paymentOrderId"
+                KeyType: "RANGE"
+            ProvisionedThroughput: 
+                ReadCapacityUnits: 1
+                WriteCapacityUnits: 1
+            TimeToLiveSpecification: 
+                Enabled: false
+
+    LambdaLayerVersion:
+        Type: "AWS::Lambda::LayerVersion"
+        Properties:
+            Description: ""
+            CompatibleRuntimes: 
+              - "nodejs14.x"
+            LayerName: "payment-handlers-layer"
+            Content: 
+                S3Bucket: "${LayerBucket}"
+                S3Key: !Sub "${LayerFileKey}"
+
