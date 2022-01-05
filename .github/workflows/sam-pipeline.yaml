@@ -46,6 +46,11 @@ jobs:
           npm run build
           zip -r ./${{ steps.vars.outputs.bucket_name }} nodejs
 
+      - name: List layer zip file
+        run: |
+          ls -la
+          pwd
+
       - name: Create S3 Bucket to store layer code (if not already exists)
         run: |
           aws s3api head-bucket --bucket ${{ steps.vars.outputs.bucket_name }} 2>/dev/null || aws s3 mb s3://${{ steps.vars.outputs.bucket_name }}
