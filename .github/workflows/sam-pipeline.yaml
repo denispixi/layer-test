@@ -46,7 +46,7 @@ jobs:
 
       - name: Print latest layer version
         run: |
-          echo "${{ steps.vars.outputs.bucket_name }}"
+          echo "${{ steps.get_latest_layer.outputs.layer_version_arn }}"
 
       # - name: Create S3 Bucket to store layer code (if not already exists)
       #   run: |
