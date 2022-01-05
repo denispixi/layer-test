@@ -61,6 +61,6 @@ jobs:
       - name: Deploy to AWS CloudFormation
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          name: MyStack
+          name: payment-order-handlers
           template: IaC/stack.yaml
           parameter-overrides: "LayerBucket=${{ steps.vars.outputs.bucket_name }},LayerFileKey=${{ steps.vars.outputs.branch }}/${{ steps.vars.outputs.layer_file_key }}"
