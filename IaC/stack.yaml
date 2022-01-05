@@ -28,11 +28,7 @@ Resources:
               - 
                 AttributeName: "paymentOrderId"
                 KeyType: "RANGE"
-            ProvisionedThroughput: 
-                ReadCapacityUnits: 1
-                WriteCapacityUnits: 1
-            TimeToLiveSpecification: 
-                Enabled: false
+            BillingMode: "PAY_PER_REQUEST"
 
     LambdaLayerVersion:
         Type: "AWS::Lambda::LayerVersion"
